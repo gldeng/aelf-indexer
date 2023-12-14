@@ -79,7 +79,12 @@ public class AElfIndexerDappBaseModule : AbpModule
                     options.BrokerList = configuration.GetSection("Kafka:Brokers").Get<List<string>>();
                     options.ConsumerGroupId = "AElfIndexer";
                     options.ConsumeMode = ConsumeMode.LastCommittedMessage;
-                    options.AddTopic(AElfIndexerApplicationConsts.MessageStreamNamespace,new TopicCreationConfig { AutoCreate = true });
+                    options.AddTopic(AElfIndexerApplicationConsts.MessageStreamNamespace, new TopicCreationConfig
+                    {
+                        AutoCreate = true, 
+                        Partitions = configuration.GetSection("Kafka:Partitions").Get<int>(),
+                        ReplicationFactor = configuration.GetSection("Kafka:ReplicationFactor").Get<short>()
+                    });
                     options.MessageMaxBytes = configuration.GetSection("Kafka:MessageMaxBytes").Get<int>();
                 })
                 .AddJson()
